@@ -1,6 +1,5 @@
 const request = require('../request');
 const { dropCollection } = require('../db');
-const jwt = require('jsonwebtoken');
 const { signupUser } = require('../data-helpers');
 
 describe('Books API', () => {
@@ -74,12 +73,45 @@ describe('Books API', () => {
           .expect(200)
 
           .then(({ body }) => {
-            console.log(body);
             expect(body.length).toBe(2);
             expect(body[0].owner).toBe(user._id);
 
           });
       });
 
+  });
+
+  it('updates a book', () => {
+    return postBook(book)
+      .then(book => {
+        return request
+          .put(`/api/books/${book._id}`)
+          .set('Authorization', user.token)
+          .send({ author: 'Allison Busse' })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.author).toBe('Allison Busse');
+            expect(body.owner).toBe(user._id);
+          });
+      });
+  });
+
+  it('deletes a book', () => {
+    return postBook(book)
+      .then(book => {
+        return request
+          .delete(`/api/books/${book._id}`)
+          .set('Authorization', user.token)
+          .expect(200)
+          .then(() => {
+            return request
+              .get('/api/books')
+              .set('Authorization', user.token)
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.length).toBe(0);
+              });
+          });
+      });
   });
 });
