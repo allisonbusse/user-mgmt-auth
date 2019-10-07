@@ -6,7 +6,7 @@
 
 ### Links and Resources
 * [submission PR](https://github.com/allisonbusse/user-mgmt-auth/pull/2)
-* [travis](https://travis-ci.com/allisonbusse/user-mgmt-auth/builds/130608094)
+* [travis](https://travis-ci.com/allisonbusse/user-mgmt-auth/builds/130609089)
 
 * [heroku](https://user-auth-mgmt.herokuapp.com/)
 
