@@ -11,10 +11,6 @@ describe('Movies API', () => {
     email: 'alex@hellohello.com',
     password: 'abc123'
   };
-  const louslyOlUser = {
-    email: 'wassup@hellohello.com',
-    password: 'abc123'
-  };
 
 
   function signinAdminUser(admin = adminTest) {
@@ -34,15 +30,6 @@ describe('Movies API', () => {
     title: 'Call Me By Your Name',
     yearReleased: 2017
   };
-
-  function postMovie(movie) {
-    return request
-      .post('/api/movies')
-      .set('Authorization', adminUser.token)
-      .send(movie)
-      .expect(200)
-      .then(({ body }) => body);
-  }
 
   it('posts a movie', () => {
     return signupUser(adminTest)
