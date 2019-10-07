@@ -5,10 +5,10 @@
 ### Author: Allison Busse
 
 ### Links and Resources
-* [submission PR](https://github.com/allisonbusse-401-advanced-javascript/mongoose-lab/pull/1)
-* [travis](https://travis-ci.com/allisonbusse-401-advanced-javascript/mongoose-lab/builds/128834739)
+* [submission PR](https://github.com/allisonbusse/user-mgmt-auth/pull/2)
+* [travis](https://travis-ci.com/allisonbusse/user-mgmt-auth/builds/130608094)
 
-* [heroku](https://mongoose-lab.herokuapp.com/)
+* [heroku](https://user-auth-mgmt.herokuapp.com/)
 
 
 #### Running the app
