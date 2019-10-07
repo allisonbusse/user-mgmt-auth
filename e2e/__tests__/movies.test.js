@@ -13,7 +13,7 @@ describe('Movies API', () => {
   };
 
 
-  function signinAdminUser(admin = adminTest) {
+  function signinAdminUser(admin) {
     return request
       .post('/api/auth/signin')
       .send(admin)
