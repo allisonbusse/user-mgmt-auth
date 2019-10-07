@@ -97,7 +97,7 @@ describe('Auth API', () => {
       .expect(401);
   });
 
-  
+
 });
 
 describe('Auth Admin Users', () => {
@@ -133,15 +133,77 @@ describe('Auth Admin Users', () => {
           signupUser(louslyOlUser)
         ])
           .then(([adminUser, user]) => {
-            console.log(adminUser, user);
             return request
               .put(`/api/auth/users/${user._id}/roles/admin`)
               .set('Authorization', adminUser.token)
               .expect(200)
               .then(({ body }) => {
-                console.log(body);
+                expect(body.roles[0]).toBe('admin');
               });
           });
+      });
+  });
+
+  const newUser = {
+    email: 'help@help.com',
+    password: 'abc'
+  };
+
+  it('allows admin to delete role', () => {
+    return Promise.all([
+      signinAdminUser(),
+      signupUser(newUser)
+    ])
+      .then(([adminUser, newUser]) => {
+        return request
+          .put(`/api/auth/users/${newUser._id}/roles/admin`)
+          .set('Authorization', adminUser.token)
+          .expect(200)
+          .then(({ body }) => {
+            return request
+              .delete(`/api/auth/users/${body._id}/roles/admin`)
+              .set('Authorization', adminUser.token)
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.roles).toEqual([]);
+              });
+          });
+      });
+  });
+
+  it('gets all users', () => {
+    return Promise.all([
+      signinAdminUser(),
+      signupUser({
+        email: 'abbey@abbey.com',
+        password: 'abc'
+      }),
+      signupUser({
+        email: 'andy@andy.com',
+        password: '123'
+      })
+    ])
+      // eslint-disable-next-line no-unused-vars
+      .then(([adminUser, userOne, userTwo]) => {
+        return request
+          .put(`/api/auth/users/${userTwo._id}/roles/admin`)
+          .set('Authorization', adminUser.token)
+          .expect(200)
+          .then(() => {
+            return request
+              .get('/api/auth/users/')
+              .set('Authorization', adminUser.token)
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.length).toEqual(6);
+                expect(body[5]).toEqual({
+                  email: 'andy@andy.com',
+                  roles: ['admin'],
+                  _id: expect.any(String)
+                });
+              });
+          });
+
       });
   });
 });
