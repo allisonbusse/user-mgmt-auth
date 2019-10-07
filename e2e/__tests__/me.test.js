@@ -85,9 +85,9 @@ describe('Books API', () => {
 
   it('deletes a book from my favorites', () => {
     return putFavorite(book)
-      .then((favorites) => {
+      .then(favorite => {
         return request
-          .delete(`/api/me/favorites/${favorites[0]}`)
+          .delete(`/api/me/favorites/${favorite[0]}`)
           .set('Authorization', user.token)
           .expect(200)
           .then(({ body }) => {
