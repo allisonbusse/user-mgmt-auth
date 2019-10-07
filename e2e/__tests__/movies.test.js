@@ -1,7 +1,5 @@
 const request = require('../request');
 const { dropCollection } = require('../db');
-const { signupUser } = require('../data-helpers');
-const User = require('../../lib/models/user');
 
 
 describe('Movies API', () => {
@@ -32,31 +30,19 @@ describe('Movies API', () => {
   };
 
   it('posts a movie', () => {
-    return signupUser(adminTest)
-      .then(user => {
-        return User.updateById(user._id,
-          {
-            $addToSet: {
-              roles: 'admin'
-            }
-          }
-        );
-      })
-      .then(() => {
-        return signinAdminUser(adminTest)
-          .then(adminUser => {
-            return request
-              .post('/api/movies')
-              .set('Authorization', adminUser.token)
-              .send(movie)
-              // .expect(200)
-              .then(({ body }) => {
-                expect(body).toEqual({
-                  ...movie,
-                  __v: 0,
-                  _id: expect.any(String)
-                });
-              });
+    return signinAdminUser(adminTest)
+      .then(adminUser => {
+        return request
+          .post('/api/movies')
+          .set('Authorization', adminUser.token)
+          .send(movie)
+          // .expect(200)
+          .then(({ body }) => {
+            expect(body).toEqual({
+              ...movie,
+              __v: 0,
+              _id: expect.any(String)
+            });
           });
       });
   });
@@ -84,18 +70,15 @@ describe('Movies API', () => {
   });
 
   it('does not let a non-admin post a movie', () => {
-    return signupUser(testUser)
-      .then(() => {
-        return signinAdminUser(testUser)
-          .then(adminUser => {
-            return request
-              .post('/api/movies')
-              .set('Authorization', adminUser.token)
-              .send(movie)
-              .expect(403)
-              .then(({ body }) => {
-                expect(body.error).toEqual('User not authorized, must be "admin"');
-              });
+    return signinAdminUser(testUser)
+      .then(adminUser => {
+        return request
+          .post('/api/movies')
+          .set('Authorization', adminUser.token)
+          .send(movie)
+          .expect(403)
+          .then(({ body }) => {
+            expect(body.error).toEqual('User not authorized, must be "admin"');
           });
       });
   });
