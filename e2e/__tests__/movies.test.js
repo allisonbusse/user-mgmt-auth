@@ -4,7 +4,7 @@ const { signupUser } = require('../data-helpers');
 const User = require('../../lib/models/user');
 
 
-describe('Movies API', () => {
+describe.skip('Movies API', () => {
   beforeEach(() => dropCollection('movies'));
 
   const adminTest = {
