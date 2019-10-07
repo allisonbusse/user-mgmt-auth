@@ -5,8 +5,8 @@
 ### Author: Allison Busse
 
 ### Links and Resources
-* [submission PR](https://github.com/allisonbusse/user-mgmt-auth/pull/2)
-* [travis](https://travis-ci.com/allisonbusse/user-mgmt-auth/builds/130609089)
+* [submission PR](https://github.com/allisonbusse/user-mgmt-auth/pull/1)
+* [travis](https://travis-ci.com/allisonbusse/user-mgmt-auth/builds/130610119)
 
 * [heroku](https://user-auth-mgmt.herokuapp.com/)
 
