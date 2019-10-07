@@ -75,8 +75,6 @@ describe('Movies API', () => {
   });
 
 
-
-
   it('updates a movie', () => {
     return signinAdminUser(adminTest)
       .then(adminUser => {
@@ -86,7 +84,6 @@ describe('Movies API', () => {
           .send(movie)
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             return request
               .put(`/api/movies/${body._id}`)
               .set('Authorization', adminUser.token)
@@ -99,45 +96,81 @@ describe('Movies API', () => {
       });
   });
 
-  it.skip('deletes a movie', () => {
-    return postMovie(movie)
-      .then(movie => {
-        return request
-          .delete(`/api/movies/${movie._id}`)
-          .set('Authorization', user.token)
-          .expect(200)
-          .then(() => {
+  it('does not let a non-admin post a movie', () => {
+    return signupUser(testUser)
+      .then(() => {
+        return signinAdminUser(testUser)
+          .then(adminUser => {
             return request
-              .get('/api/movies')
-              .set('Authorization', user.token)
-              .expect(200)
+              .post('/api/movies')
+              .set('Authorization', adminUser.token)
+              .send(movie)
+              .expect(403)
               .then(({ body }) => {
-                expect(body.length).toBe(0);
+                expect(body.error).toEqual('User not authorized, must be "admin"');
               });
           });
       });
+  });
 
-    it.skip('gets all movies', () => {
-      return Promise.all([
-        postMovie(movie),
-        postMovie({
-          title: 'Educated',
-          author: 'Tara Westover'
-        })
-      ])
-        .then(() => {
-          return request
-            .get('/api/movies')
-            .set('Authorization', user.token)
-            .expect(200)
+  it('deletes a movie', () => {
+    return signinAdminUser(adminTest)
+      .then(adminUser => {
+        return request
+          .post('/api/movies')
+          .set('Authorization', adminUser.token)
+          .send(movie)
+          .expect(200)
+          .then(({ body }) => {
+            return request
+              .delete(`/api/movies/${body._id}`)
+              .set('Authorization', adminUser.token)
+              .expect(200)
+              .then(() => {
+                return request
+                  .get('/api/movies')
+                  .set('Authorization', adminUser.token)
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.length).toBe(0);
+                  });
+              });
+          });
+      });
+  });
 
-            .then(({ body }) => {
-              expect(body.length).toBe(2);
-              expect(body[0].owner).toBe(user._id);
+  it('gets all movies', () => {
+    return signinAdminUser(adminTest)
+      .then(adminUser => {
+        return request
+          .post('/api/movies')
+          .set('Authorization', adminUser.token)
+          .send(movie)
+          .expect(200)
+          .then(() => {
+            return request
+              .post('/api/movies')
+              .set('Authorization', adminUser.token)
+              .send({
+                title: 'La La Land',
+                yearReleased: 2016
+              })
+              .expect(200)
+              .then(() => {
 
-            });
-        });
+                return signinAdminUser(testUser)
+                  .then(user => {
+                    return request
+                      .get('/api/movies')
+                      .set('Authorization', user.token)
+                      .expect(200)
+                      .then(({ body }) => {
+                        expect(body.length).toBe(2);
+                      });
+                  });
+              });
 
-    });
+          });
+      });
   });
 });
